@@ -24,7 +24,7 @@ HEART_BEAT = int(os.environ.get("WSLINK_HEART_BEAT", 30)) # 30 seconds
 
 
 async def _on_startup(app):
-    STARTUP_MSG = os.environ.get("WSLINK_READY_MSG", "wslink: Starting factory")
+    STARTUP_MSG = os.environ.get("WSLINK_READY_MSG", "wslink: Starting factory222")
     if STARTUP_MSG:
         # Emit an expected log message so launcher.py knows we've started up.
         print(STARTUP_MSG)
@@ -217,7 +217,7 @@ class WslinkHandler(object):
         return self.serverProtocol
 
     async def disconnectClients(self):
-        logging.info("Closing client connections:")
+        logging.info("Closing client connections2:")
         keys = list(self.connections.keys())
         for client_id in keys:
             logging.info("  {0}".format(client_id))
@@ -235,7 +235,7 @@ class WslinkHandler(object):
         current_ws = aiohttp_web.WebSocketResponse(max_msg_size=MAX_MSG_SIZE, heartbeat=HEART_BEAT)
         self.connections[client_id] = current_ws
 
-        logging.info("client {0} connected".format(client_id))
+        logging.info("client {0} connected 2".format(client_id))
 
         if aiohttp_app["state"]["shutdown_task"]:
             logging.info("Canceling shutdown task")
@@ -256,7 +256,7 @@ class WslinkHandler(object):
         logging.info("client {0} disconnected".format(client_id))
 
         if not self.connections:
-            logging.info("No more connections, scheduling shutdown")
+            logging.info("No more connections, scheduling shutdown2")
             _schedule_shutdown(aiohttp_app)
 
         return current_ws
