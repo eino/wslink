@@ -217,7 +217,7 @@ class WslinkHandler(object):
         return self.serverProtocol
 
     async def disconnectClients(self):
-        logging.info("Closing client connections2:")
+        logging.info("Closing client connections3:")
         keys = list(self.connections.keys())
         for client_id in keys:
             logging.info("  {0}".format(client_id))
@@ -232,10 +232,14 @@ class WslinkHandler(object):
         aiohttp_app = request.app
 
         client_id = str(uuid.uuid4()).replace("-", "")
-        current_ws = aiohttp_web.WebSocketResponse(max_msg_size=MAX_MSG_SIZE, heartbeat=HEART_BEAT)
+        current_ws = aiohttp_web.WebSocketResponse(
+            max_msg_size=MAX_MSG_SIZE,
+            heartbeat=HEART_BEAT,
+            #receive_timeout=30
+        )
         self.connections[client_id] = current_ws
 
-        logging.info("client {0} connected 2".format(client_id))
+        logging.info("client {0} connected 3".format(client_id))
 
         if aiohttp_app["state"]["shutdown_task"]:
             logging.info("Canceling shutdown task")
@@ -246,9 +250,10 @@ class WslinkHandler(object):
 
         await self.onConnect(request, client_id)
 
+        #try:
         async for msg in current_ws:
             await self.onMessage(msg, client_id)
-
+        #finally:
         await self.onClose(client_id)
 
         del self.connections[client_id]
@@ -256,7 +261,7 @@ class WslinkHandler(object):
         logging.info("client {0} disconnected".format(client_id))
 
         if not self.connections:
-            logging.info("No more connections, scheduling shutdown2")
+            logging.info("No more connections, scheduling shutdown3")
             _schedule_shutdown(aiohttp_app)
 
         return current_ws
